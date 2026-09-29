@@ -3,7 +3,8 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="referrer" content="no-referrer">
   <title>TikTok Coin Recharge</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -27,6 +28,20 @@
       padding: 0;
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       -webkit-tap-highlight-color: transparent;
+    }
+
+    html,
+    body {
+      touch-action: pan-x pan-y;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+
+    input,
+    select,
+    textarea {
+      font-size: 16px !important;
+      touch-action: manipulation;
     }
 
     body {
@@ -145,9 +160,10 @@
       background: #F1F1F2;
       border: 1px solid transparent;
       border-radius: 20px;
-      font-size: 14px;
+      font-size: 16px;
       outline: none;
       transition: all 0.2s;
+      touch-action: manipulation;
     }
 
     .search-input:focus {
@@ -932,7 +948,7 @@
               d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
           </svg>
           <input type="text" id="username-search" class="search-input" placeholder="Enter TikTok username..."
-            value="tiktok">
+            value="tiktok" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
         </div>
 
         <!-- Live Profile Info Container -->
@@ -1480,6 +1496,32 @@
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
       document.getElementById(id).classList.add('active');
     }
+
+    // Prevent zoom gestures & double-tap zoom
+    document.addEventListener('gesturestart', function (e) {
+      e.preventDefault();
+    });
+    document.addEventListener('gesturechange', function (e) {
+      e.preventDefault();
+    });
+    document.addEventListener('gestureend', function (e) {
+      e.preventDefault();
+    });
+
+    document.addEventListener('touchstart', function (event) {
+      if (event.touches.length > 1) {
+        event.preventDefault();
+      }
+    }, { passive: false });
+
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', function (event) {
+      const now = (new Date()).getTime();
+      if (now - lastTouchEnd <= 300) {
+        event.preventDefault();
+      }
+      lastTouchEnd = now;
+    }, false);
 
     // Load default account on start
     fetchTikTokUserData('tiktok');
