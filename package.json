@@ -1,0 +1,13 @@
+{
+  "name": "tiktok-coin-recharge",
+  "version": "1.0.0",
+  "description": "TikTok Coin Recharge Web App",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1"
+  }
+}
