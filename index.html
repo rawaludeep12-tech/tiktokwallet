@@ -7,7 +7,8 @@
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="referrer" content="no-referrer">
   <title>TikTok Coin Recharge</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
   <style>
     :root {
       --primary: #FE2C55;
@@ -30,11 +31,17 @@
       -webkit-tap-highlight-color: transparent;
     }
 
+    html {
+      height: 100%;
+      height: -webkit-fill-available;
+    }
+
     html,
     body {
       touch-action: pan-x pan-y;
       -webkit-text-size-adjust: 100%;
       text-size-adjust: 100%;
+      overflow: hidden;
     }
 
     input,
@@ -50,7 +57,10 @@
       display: flex;
       justify-content: center;
       align-items: flex-start;
-      min-height: 100vh;
+      height: 100vh;
+      height: 100dvh;
+      height: -webkit-fill-available;
+      overflow: hidden;
     }
 
     @media (min-width: 481px) {
@@ -63,13 +73,17 @@
       width: 100%;
       max-width: 430px;
       height: 100vh;
-      max-height: 932px;
+      height: 100dvh;
+      height: -webkit-fill-available;
       background-color: var(--bg-gray);
       position: relative;
-      overflow-y: auto;
+      overflow: hidden;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
       display: flex;
       flex-direction: column;
+      /* Safe area for iPhone notch/home indicator */
+      padding-bottom: env(safe-area-inset-bottom);
+      padding-top: env(safe-area-inset-top);
     }
 
     @media (min-width: 481px) {
@@ -115,7 +129,9 @@
       flex-direction: column;
       padding: 16px;
       flex: 1;
+      min-height: 0;
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     .screen.active {
@@ -427,10 +443,36 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 36px 20px 28px;
+      padding: 24px 20px 20px;
       flex: 1;
+      min-height: 0;
       background: #fff;
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    @media (max-height: 700px) {
+      .success-screen-wrap {
+        padding: 16px 20px 16px;
+      }
+
+      .success-check-circle {
+        width: 56px !important;
+        height: 56px !important;
+        margin-bottom: 12px !important;
+      }
+
+      .success-title {
+        font-size: 18px !important;
+      }
+
+      .success-subtitle {
+        margin-bottom: 16px !important;
+      }
+
+      .gifter-card {
+        margin-bottom: 14px !important;
+      }
     }
 
     .success-check-circle {
@@ -873,9 +915,683 @@
       transition: background 0.15s, transform 0.1s;
     }
 
-    .btn-confirm-pay:active {
-      transform: scale(0.97);
-      background: var(--primary-hover);
+    /* ─── LIVE REWARDS SCREEN (Matches Attached UI) ─── */
+    #screen-live-rewards {
+      background: #FFFFFF;
+      padding: 0;
+      flex: 1;
+      min-height: 0;
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    #screen-live-rewards.active {
+      display: flex;
+    }
+
+    /* iOS Status Bar */
+    .ios-status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 20px 6px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #000000;
+      background: #FFFFFF;
+      user-select: none;
+      flex-shrink: 0;
+    }
+
+    .status-left {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .status-time {
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: -0.3px;
+    }
+
+    .status-location-icon {
+      margin-left: 2px;
+      transform: rotate(45deg);
+    }
+
+    .status-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .battery-pill {
+      width: 22px;
+      height: 11px;
+      border: 1.5px solid #000;
+      border-radius: 3.5px;
+      padding: 1px;
+      display: flex;
+      align-items: center;
+      position: relative;
+    }
+
+    .battery-pill::after {
+      content: '';
+      position: absolute;
+      right: -3.5px;
+      top: 2.5px;
+      width: 2px;
+      height: 4px;
+      background: #000;
+      border-radius: 0 1px 1px 0;
+    }
+
+    .battery-fill {
+      width: 100%;
+      height: 100%;
+      background: #000;
+      border-radius: 1.5px;
+    }
+
+    /* LIVE Rewards Top Navigation Header */
+    .live-nav-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 16px 12px;
+      background: #FFFFFF;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .live-nav-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #121212;
+      border-radius: 50%;
+      transition: background 0.15s;
+    }
+
+    .live-nav-btn:active {
+      background: #F1F1F2;
+    }
+
+    .live-nav-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: #121212;
+      letter-spacing: -0.3px;
+    }
+
+    /* Content Area */
+    .live-body-content {
+      padding: 4px 18px 16px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* Scaled Notice Card */
+    .scaled-notice-card {
+      background: #FFFFFF;
+      position: relative;
+      padding: 4px 2px 14px;
+      margin-bottom: 12px;
+    }
+
+    .scaled-notice-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 5px;
+    }
+
+    .scaled-notice-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #121212;
+      letter-spacing: -0.2px;
+    }
+
+    .scaled-close-btn {
+      background: none;
+      border: none;
+      color: #A0A1A7;
+      cursor: pointer;
+      padding: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .scaled-notice-desc {
+      font-size: 13px;
+      line-height: 1.45;
+      color: #73747B;
+      margin-bottom: 6px;
+    }
+
+    .scaled-notice-link {
+      font-size: 13px;
+      font-weight: 600;
+      color: #FE2C55;
+      text-decoration: none;
+      cursor: pointer;
+      display: inline-block;
+    }
+
+    /* Metric Summary Boxes */
+    .rewards-cards-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .reward-metric-box {
+      background: #F6F6F8;
+      border-radius: 12px;
+      padding: 13px 8px 14px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .metric-label {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #161823;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .red-dot-indicator {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #FE2C55;
+      display: inline-block;
+    }
+
+    .metric-value {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: #121212;
+      letter-spacing: -0.2px;
+      white-space: nowrap;
+    }
+
+    /* Main Available Rewards Hero Display */
+    .live-hero-section {
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    .live-hero-label {
+      font-size: 13px;
+      color: #73747B;
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+
+    .live-hero-amount-wrapper {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      line-height: 1.05;
+      white-space: nowrap;
+    }
+
+    .hero-usd-tag {
+      font-size: clamp(16px, 4.8vw, 20px);
+      font-weight: 800;
+      color: #555760;
+      letter-spacing: 0.2px;
+      margin-right: 5px;
+    }
+
+    .hero-amount-digits {
+      font-size: clamp(23px, 6.8vw, 34px);
+      font-weight: 900;
+      color: #000000;
+      letter-spacing: -0.8px;
+    }
+
+    .live-hero-subvalue {
+      margin-top: 8px;
+      font-size: 12.5px;
+      color: #73747B;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .info-circle-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 1px solid #8A8B91;
+      font-size: 9.5px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 1;
+      color: #8A8B91;
+    }
+
+    /* Action Buttons */
+    .live-btn-exchange {
+      width: 100%;
+      height: 48px;
+      border-radius: 24px;
+      background: #FE2C55;
+      color: #FFFFFF;
+      font-size: 16px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 8px;
+      transition: background 0.15s, transform 0.1s;
+    }
+
+    .live-btn-exchange:active {
+      background: #E02649;
+      transform: scale(0.98);
+    }
+
+    .live-btn-withdraw {
+      width: 100%;
+      height: 48px;
+      border-radius: 24px;
+      background: #EAEBED;
+      color: #121212;
+      font-size: 16px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+      transition: background 0.15s, transform 0.1s;
+    }
+
+    .live-btn-withdraw:active {
+      background: #DFE0E3;
+      transform: scale(0.98);
+    }
+
+    /* Daily Limit Row */
+    .daily-limit-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12.5px;
+      color: #73747B;
+      padding: 0 2px 18px;
+    }
+
+    .daily-limit-val {
+      font-weight: 700;
+      color: #121212;
+      font-size: 13px;
+    }
+
+    /* Transactions Section */
+    .tx-section-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #121212;
+      margin-top: 14px;
+      margin-bottom: 12px;
+      letter-spacing: -0.3px;
+    }
+
+    .tx-filter-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .tx-month-dropdown {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 15px;
+      font-weight: 700;
+      color: #121212;
+      cursor: pointer;
+    }
+
+    .tx-in-amount {
+      font-size: 13px;
+      color: #73747B;
+      font-weight: 500;
+    }
+
+    /* Transaction Item */
+    .tx-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .tx-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .tx-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #121212;
+      letter-spacing: -0.2px;
+    }
+
+    .tx-time {
+      font-size: 12px;
+      color: #8A8B91;
+    }
+
+    /* ─── EXCHANGE SCREEN (Matches Attached Screenshot UI) ─── */
+    .exchange-nav-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 16px 12px;
+      background: #FFFFFF;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .exchange-nav-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #121212;
+      border-radius: 50%;
+      transition: background 0.15s;
+    }
+
+    .exchange-nav-btn:active {
+      background: #F1F1F2;
+    }
+
+    .exchange-nav-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #121212;
+      letter-spacing: -0.3px;
+    }
+
+    .help-circle-badge {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 1.8px solid #121212;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: #121212;
+      line-height: 1;
+    }
+
+    .exchange-body-content {
+      padding: 4px 18px 16px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .exchange-balance-section {
+      text-align: center;
+      margin-top: 4px;
+      margin-bottom: 14px;
+    }
+
+    .exchange-balance-caption {
+      font-size: 13px;
+      color: #73747B;
+      font-weight: 500;
+      margin-bottom: 6px;
+    }
+
+    .exchange-balance-amount {
+      font-size: clamp(24px, 7vw, 34px);
+      font-weight: 900;
+      color: #000000;
+      letter-spacing: -0.8px;
+      margin-bottom: 6px;
+    }
+
+    .exchange-balance-sub {
+      font-size: 12.5px;
+      color: #73747B;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      flex-wrap: wrap;
+    }
+
+    .mini-coin-badge {
+      width: 16px;
+      height: 16px;
+      vertical-align: middle;
+      margin: 0 1px;
+    }
+
+    .sub-coins-bold {
+      font-weight: 700;
+      color: #121212;
+    }
+
+    .exchange-balance-hint {
+      font-size: 12px;
+      color: #8A8B91;
+      margin-top: 6px;
+    }
+
+    .exchange-field-group {
+      margin-bottom: 14px;
+    }
+
+    .exchange-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 700;
+      color: #121212;
+      margin-bottom: 8px;
+    }
+
+    .exchange-input-box {
+      position: relative;
+      display: flex;
+      align-items: center;
+      background: #FFFFFF;
+      border: 1.5px solid #E5E5E7;
+      border-radius: 12px;
+      height: 48px;
+      padding: 0 14px;
+      transition: border-color 0.2s;
+    }
+
+    .exchange-input-box:focus-within {
+      border-color: #121212;
+    }
+
+    .input-at-symbol {
+      color: #8A8B91;
+      font-size: 16px;
+      font-weight: 600;
+      margin-right: 6px;
+    }
+
+    .exchange-username-input {
+      border: none;
+      background: transparent;
+      outline: none;
+      width: 100%;
+      font-size: 15px;
+      color: #121212;
+      font-weight: 500;
+    }
+
+    .exchange-packs-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .exchange-pack-box {
+      background: #FFFFFF;
+      border: 1.5px solid #EAEAEA;
+      border-radius: 14px;
+      padding: 16px 6px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .exchange-pack-box.selected {
+      border-color: #FE2C55;
+      background: #FFF5F7;
+    }
+
+    .pack-coin-title {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      font-size: 16px;
+      font-weight: 800;
+      color: #121212;
+      margin-bottom: 5px;
+    }
+
+    .pack-coin-icon {
+      width: 17px;
+      height: 17px;
+    }
+
+    .pack-usd-price {
+      font-size: 12.5px;
+      color: #73747B;
+      font-weight: 500;
+    }
+
+    .custom-amount-pill {
+      background: #F1F1F3;
+      border-radius: 12px;
+      padding: 14px 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      color: #8A8B91;
+      font-size: 14px;
+      font-weight: 500;
+      transition: background 0.15s;
+    }
+
+    .custom-amount-pill:hover,
+    .custom-amount-pill:active {
+      background: #E8E8EB;
+    }
+
+    .custom-amount-pill.selected {
+      background: #FFF5F7;
+      border: 1.5px solid #FE2C55;
+      color: #FE2C55;
+      font-weight: 600;
+    }
+
+    .exchange-note-line {
+      font-size: 12px;
+      color: #73747B;
+      line-height: 1.45;
+      margin-top: 14px;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 3px;
+    }
+
+    .note-coin-icon {
+      width: 14px;
+      height: 14px;
+      vertical-align: middle;
+      margin: 0 1px;
+    }
+
+    .exchange-policy-notice {
+      font-size: 12px;
+      line-height: 1.45;
+      color: #8A8B91;
+      margin-top: 14px;
+    }
+
+    .exchange-policy-notice strong {
+      color: #121212;
+      font-weight: 700;
+    }
+
+    .exchange-submit-btn {
+      width: 100%;
+      height: 48px;
+      border-radius: 24px;
+      background: #FE2C55;
+      color: #FFFFFF;
+      font-size: 16px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      margin-top: 14px;
+      transition: background 0.15s, transform 0.1s;
+    }
+
+    .exchange-submit-btn:active {
+      background: #E02649;
+      transform: scale(0.98);
     }
   </style>
 </head>
@@ -883,141 +1599,231 @@
 <body>
 
   <div class="mobile-container">
-    <header
-      style="display:flex; align-items:center; justify-content:center; position:relative; padding: 14px 16px; background:#fff; border-bottom:1px solid #EAEAEA;">
-      <!-- Left placeholder for centering -->
-      <div style="position:absolute; left:16px; width:28px;"></div>
 
-      <!-- Centered Title -->
-      <span style="font-size:17px; font-weight:700; color:#121212; letter-spacing:-0.3px;">Wallet</span>
 
-      <!-- Right icons -->
-      <div style="position:absolute; right:12px; display:flex; align-items:center; gap:6px;">
-        <!-- Three dots -->
-        <button
-          style="background:none; border:none; cursor:pointer; padding:6px; font-size:18px; color:#333; letter-spacing:1px; line-height:1;">•••</button>
-        <!-- Help icon -->
-        <button
-          style="background:none; border:none; cursor:pointer; padding:6px; color:#333; display:flex; align-items:center;">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"
+    <!-- LIVE REWARDS SCREEN (Matches Attached Screenshot UI) -->
+    <div id="screen-live-rewards" class="screen active">
+
+
+      <!-- LIVE Rewards Top Navigation Header -->
+      <div class="live-nav-bar">
+        <button class="live-nav-btn" onclick="showLiveToast('Navigating back...')" aria-label="Back">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4"
             stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10" />
-            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-            <line x1="12" y1="17" x2="12.01" y2="17" />
+            <polyline points="15 18 9 12 15 6"></polyline>
           </svg>
         </button>
-        <!-- Logout icon -->
-        <button
-          style="background:none; border:none; cursor:pointer; padding:6px; color:#333; display:flex; align-items:center;">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"
+        <span class="live-nav-title">LIVE rewards</span>
+        <button class="live-nav-btn" onclick="showLiveToast('Closed')" aria-label="Close">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4"
             stroke-linecap="round" stroke-linejoin="round">
-            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-            <polyline points="16 17 21 12 16 7" />
-            <line x1="21" y1="12" x2="9" y2="12" />
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
           </svg>
         </button>
       </div>
-    </header>
 
-    <!-- MAIN SCREEN -->
-    <div id="screen-main" class="screen active">
-
-      <!-- Promotional Banners -->
-      <div class="promo-banner">
-        <div class="promo-content">
-          <h3>Summer Sale! ☀️</h3>
-          <p>Get 31% OFF on all coin packs.</p>
+      <!-- Scrollable Body Content -->
+      <div class="live-body-content">
+        <!-- Scaled LIVE Rewards Notice -->
+        <div class="scaled-notice-card" id="scaled-notice">
+          <div class="scaled-notice-header">
+            <span class="scaled-notice-title">Say hi to Scaled LIVE Rewards</span>
+            <button class="scaled-close-btn" onclick="dismissNotice()" aria-label="Dismiss">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+          <div class="scaled-notice-desc">
+            Your dedication to quality content could get you a rewards percentage of up to 53%.
+          </div>
+          <a href="javascript:void(0)" class="scaled-notice-link" onclick="openLearnMoreModal()">Learn more</a>
         </div>
-        <button class="promo-btn">Claim Now</button>
-      </div>
 
-      <div class="promo-banner invite-banner">
-        <div class="promo-content">
-          <h3>Invite a Friend 🎁</h3>
-          <p>You both get 500 free coins.</p>
+        <!-- Metric Summary Cards -->
+        <div class="rewards-cards-grid">
+          <div class="reward-metric-box">
+            <span class="metric-label">Available rewards</span>
+            <span class="metric-value" id="live-available-metric">$9,691,068,000.00</span>
+          </div>
+          <div class="reward-metric-box">
+            <span class="metric-label">
+              Upcoming rewards <span class="red-dot-indicator"></span>
+            </span>
+            <span class="metric-value">$2,000,000.00</span>
+          </div>
         </div>
-        <button class="promo-btn">Invite</button>
-      </div>
 
-      <!-- Live TikTok Search Section -->
-      <div class="search-section">
-        <div class="search-title">Send Coins To Account</div>
-        <div class="search-input-wrapper">
-          <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        <!-- Big Hero Balance Display -->
+        <div class="live-hero-section">
+          <div class="live-hero-label">Available rewards</div>
+          <div class="live-hero-amount-wrapper">
+            <span class="hero-usd-tag">USD</span>
+            <span class="hero-amount-digits" id="live-hero-digits">9,691,068,000</span><span class="hero-amount-cents"
+              id="live-hero-cents">.00</span>
+          </div>
+          <div class="live-hero-subvalue">
+            <span id="live-hero-sub-text">= $9,691,068,000.00</span>
+            <span class="info-circle-icon">i</span>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <button class="live-btn-exchange" onclick="showScreen('screen-main')" id="btn-live-exchange">
+          Exchange
+        </button>
+        <button class="live-btn-withdraw" onclick="handleWithdraw()">
+          Withdraw
+        </button>
+
+        <!-- Daily Withdrawal Limit Row -->
+        <div class="daily-limit-row">
+          <span>Daily withdrawal limit (Remain/Total)</span>
+          <span class="daily-limit-val">$1000/$1000</span>
+        </div>
+
+        <!-- Transactions Section -->
+        <div class="tx-section-title">Transactions</div>
+        <div class="tx-filter-bar">
+          <div class="tx-month-dropdown" onclick="showLiveToast('Filtered by Jun 2026')">
+            <span>Jun 2026</span>
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
+          <span class="tx-in-amount">in: USD0.46</span>
+        </div>
+
+        <!-- Transaction List -->
+        <div class="tx-list" id="live-tx-list">
+          <div class="tx-item">
+            <div class="tx-title">Sent 10,000 Coins to @Abbygirl0905</div>
+            <div class="tx-time">8/3/2026 23:40:47</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN SCREEN (SEND COINS TO ACCOUNT) -->
+    <!-- MAIN SCREEN (EXCHANGE COINS - Matches Attached Screenshot UI) -->
+    <div id="screen-main" class="screen">
+
+
+      <!-- Top Nav Bar -->
+      <div class="exchange-nav-bar">
+        <button class="exchange-nav-btn" onclick="showScreen('screen-live-rewards')" aria-label="Back">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4"
+            stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
           </svg>
-          <input type="text" id="username-search" class="search-input" placeholder="Enter TikTok username..."
-            value="tiktok" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+        </button>
+        <span class="exchange-nav-title">Exchange</span>
+        <button class="exchange-nav-btn" onclick="showLiveToast('Exchange Help & Rules')" aria-label="Help">
+          <div class="help-circle-badge">?</div>
+        </button>
+      </div>
+
+      <!-- Body Content -->
+      <div class="exchange-body-content">
+        <!-- Hero Balance Section -->
+        <div class="exchange-balance-section">
+          <div class="exchange-balance-caption">TikTok Coins Balance</div>
+          <div class="exchange-balance-amount" id="exchange-balance-usd">$9,691,068,000.00</div>
+          <div class="exchange-balance-sub">
+            <span>= <span id="exchange-sub-usd">$9,691,068,000.00</span> (</span>
+            <img src="public/tiktok-coin.png" class="mini-coin-badge" alt="Coin">
+            <span class="sub-coins-bold" id="exchange-sub-coins">798,538,892,551</span>
+            <span>)</span>
+          </div>
+          <div class="exchange-balance-hint">Available balance to exchange the Coins</div>
         </div>
 
-        <!-- Live Profile Info Container -->
-        <div class="target-profile-card">
-          <div class="profile-info">
-            <img id="user-avatar" referrerpolicy="no-referrer"
-              src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80"
-              class="profile-avatar" alt="Avatar">
-            <div class="profile-details">
-              <div class="username" id="display-nickname">
-                TikTok Official
+        <!-- Recipient Input Section -->
+        <div class="exchange-field-group">
+          <label class="exchange-label" for="username-search">TikTok username</label>
+          <div class="exchange-input-box">
+            <span class="input-at-symbol">@</span>
+            <input type="text" id="username-search" class="exchange-username-input" placeholder="Enter TikTok username"
+              value="tiktok" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+          </div>
+
+          <!-- Live Profile Verification Card -->
+          <div class="target-profile-card" id="target-profile-card" style="margin-top: 10px;">
+            <div class="profile-info">
+              <img id="user-avatar" referrerpolicy="no-referrer"
+                src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80"
+                class="profile-avatar" alt="Avatar">
+              <div class="profile-details">
+                <div class="username" id="display-nickname">
+                  TikTok Official
+                </div>
+                <div class="handle" id="display-handle">@tiktok</div>
               </div>
-              <div class="handle" id="display-handle">@tiktok</div>
+            </div>
+            <span class="status-badge" id="search-status">Recipient</span>
+          </div>
+        </div>
+
+        <!-- Exchange earnings for Coins -->
+        <div class="exchange-field-group" style="margin-top: 18px;">
+          <div class="exchange-label">Exchange earnings for Coins</div>
+          <div class="exchange-packs-row">
+            <!-- 250 Pack -->
+            <div class="exchange-pack-box selected" onclick="selectExchangePack(this, 250, 3.03)">
+              <div class="pack-coin-title">
+                <img src="public/tiktok-coin.png" class="pack-coin-icon" alt="Coin">
+                <span>250</span>
+              </div>
+              <div class="pack-usd-price">$3.03</div>
+            </div>
+
+            <!-- 500 Pack -->
+            <div class="exchange-pack-box" onclick="selectExchangePack(this, 500, 6.07)">
+              <div class="pack-coin-title">
+                <img src="public/tiktok-coin.png" class="pack-coin-icon" alt="Coin">
+                <span>500</span>
+              </div>
+              <div class="pack-usd-price">$6.07</div>
+            </div>
+
+            <!-- 15,000 Pack -->
+            <div class="exchange-pack-box" onclick="selectExchangePack(this, 15000, 182.04)">
+              <div class="pack-coin-title">
+                <img src="public/tiktok-coin.png" class="pack-coin-icon" alt="Coin">
+                <span>15,000</span>
+              </div>
+              <div class="pack-usd-price">$182.04</div>
             </div>
           </div>
-          <span class="status-badge" id="search-status">Recipient</span>
-        </div>
-      </div>
 
-      <div class="section-header">
-        <span class="section-title">Select Recharge Pack</span>
-      </div>
-
-      <!-- Coin Packs -->
-      <div class="coin-grid">
-        <div class="coin-card selected" onclick="selectPack(this, 70, 0.74)">
-          <div class="coin-amount-group">
-            <img src="public/tiktok-coin.png" class="coin-icon" alt="Coin">
-            <span class="coin-count">70</span>
+          <!-- Custom Amount Pill -->
+          <div class="custom-amount-pill" onclick="openCustomKeypad()">
+            <span id="custom-amount-pill-text">Enter a custom number or amount</span>
           </div>
-          <div class="coin-price">$0.74</div>
         </div>
 
-        <div class="coin-card" onclick="selectPack(this, 350, 3.65)">
-          <div class="coin-amount-group">
-            <img src="public/tiktok-coin.png" class="coin-icon" alt="Coin">
-            <span class="coin-count">350</span>
-          </div>
-          <div class="coin-price">$3.65</div>
+        <!-- Available equivalence note -->
+        <div class="exchange-note-line">
+          Available: <span id="note-avail-usd">$9,691,068,000.00</span> = <span
+            id="note-avail-usd2">$9,691,068,000.00</span>
+          <img src="public/tiktok-coin.png" class="note-coin-icon" alt="Coin">
+          <span id="note-avail-coins">798,538,892,551</span>
         </div>
 
-        <div class="coin-card" onclick="selectPack(this, 700, 7.25)">
-          <div class="coin-amount-group">
-            <img src="public/tiktok-coin.png" class="coin-icon" alt="Coin">
-            <span class="coin-count">700</span>
-          </div>
-          <div class="coin-price">$7.25</div>
+        <!-- Policy notice -->
+        <div class="exchange-policy-notice">
+          Coins obtained through this exchange are subject to our <strong>Virtual Items Policy</strong>. Since you are
+          accepting your Coins, they are non-refundable.
         </div>
 
-        <div class="coin-card" onclick="selectPack(this, 1400, 14.49)">
-          <div class="coin-amount-group">
-            <img src="tiktok-coin.png" class="coin-icon" alt="Coin">
-            <span class="coin-count">1,400</span>
-          </div>
-          <div class="coin-price">$14.49</div>
-        </div>
-
-        <div class="coin-card" onclick="openCustomKeypad()">
-          <div style="font-weight:700;">Custom</div>
-          <div class="coin-price">Large amount</div>
-        </div>
-      </div>
-
-      <div class="bottom-bar">
-        <div class="total-row">
-          <span style="color:var(--text-sub);">Total Payment</span>
-          <span class="total-amount" id="main-total-price">$0.74</span>
-        </div>
-        <button class="btn-primary" onclick="goToCheckout()">Recharge Now</button>
+        <!-- Bottom Exchange Button -->
+        <button class="exchange-submit-btn" onclick="openConfirmSheet()">
+          Exchange
+        </button>
       </div>
     </div>
 
@@ -1208,8 +2014,8 @@
 
         <!-- Disclaimer Notice -->
         <div class="confirm-notice">
-          ⚠️ By confirming, you authorize TikTok Wallet to charge the stated amount from your selected payment method.
-          This transaction is <strong>non-refundable</strong> once processed.
+          ⚠️ By confirming, the amount will be deducted directly from your TikTok Coins Balance. Coins obtained are
+          <strong>non-refundable</strong>.
         </div>
 
         <!-- Action Buttons -->
@@ -1220,7 +2026,7 @@
               stroke-linecap="round" stroke-linejoin="round">
               <polyline points="20 6 9 17 4 12" />
             </svg>
-            Confirm &amp; Pay
+            Confirm &amp; Exchange
           </button>
         </div>
       </div>
@@ -1230,7 +2036,7 @@
     <div id="screen-processing" class="screen">
       <div class="processing-container">
         <div class="spinner"></div>
-        <h3 style="font-size:18px; font-weight:700;">Processing Payment...</h3>
+        <h3 style="font-size:18px; font-weight:700;">Processing Exchange...</h3>
       </div>
     </div>
 
@@ -1249,9 +2055,9 @@
         <h2 class="success-title">Exchange Completed!</h2>
 
         <p class="success-subtitle">
-          You exchanged for
+          You sent
           <img src="public/tiktok-coin.png" style="width:18px;height:18px;" alt="coin">
-          <span class="coin-highlight" id="success-coins-text">5,000,000 Coins</span>
+          <span class="coin-highlight" id="success-coins-text">250 Coins</span>
         </p>
 
         <!-- Details Card -->
@@ -1261,12 +2067,12 @@
             <span class="sdr" id="success-user-text">@tiktok</span>
           </div>
           <div class="success-detail-row">
-            <span class="sdl">Coins Exchanged</span>
-            <span class="sdr" id="success-coins-detail">70 Coins</span>
+            <span class="sdl">Coins Sent</span>
+            <span class="sdr" id="success-coins-detail">250 Coins</span>
           </div>
           <div class="success-detail-row">
-            <span class="sdl">Deducted Amount</span>
-            <span class="sdr" id="success-price-detail">$0.74</span>
+            <span class="sdl">Deducted from Balance</span>
+            <span class="sdr" id="success-price-detail">$3.03</span>
           </div>
           <div class="success-detail-row">
             <span class="sdl">Time</span>
@@ -1289,39 +2095,46 @@
           </div>
         </div>
 
-        <!-- Return to Home button -->
-        <button class="btn-return-home" onclick="resetFlow()">Return to Home</button>
+        <!-- Action buttons on success screen -->
+        <button class="btn-return-home" onclick="resetFlow()">Exchange More Coins</button>
+        <button class="btn-cancel-sheet" style="margin-top:10px; border-radius:24px; width:100%;"
+          onclick="showScreen('screen-live-rewards')">Back to LIVE Rewards</button>
 
       </div>
     </div>
   </div>
 
   <script>
-    let currentCoins = 70;
-    let currentPrice = 0.74;
-    let customString = "30";
+    let userBalanceUSD = 9691068000.00;
+    let userBalanceCoins = 798538892551;
+    let currentCoins = 250;
+    let currentPrice = 3.03;
+    let customString = "0";
     let targetUsername = "tiktok";
     let debounceTimer = null;
+    let selectedPayment = 'balance';
 
     // Real-Time Search Handler
     const searchInput = document.getElementById('username-search');
     const searchStatus = document.getElementById('search-status');
 
-    searchInput.addEventListener('input', (e) => {
-      clearTimeout(debounceTimer);
-      const val = e.target.value.trim().replace(/^@/, '');
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        clearTimeout(debounceTimer);
+        const val = e.target.value.trim().replace(/^@/, '');
 
-      if (!val) return;
+        if (!val) return;
 
-      searchStatus.innerText = "Searching...";
-      searchStatus.style.background = "#FFF5F7";
-      searchStatus.style.color = "#FE2C55";
+        searchStatus.innerText = "Searching...";
+        searchStatus.style.background = "#FFF5F7";
+        searchStatus.style.color = "#FE2C55";
 
-      // Wait 500ms after user stops typing before calling backend API
-      debounceTimer = setTimeout(() => {
-        fetchTikTokUserData(val);
-      }, 500);
-    });
+        // Wait 500ms after user stops typing before calling backend API
+        debounceTimer = setTimeout(() => {
+          fetchTikTokUserData(val);
+        }, 500);
+      });
+    }
 
     async function fetchTikTokUserData(username) {
       try {
@@ -1340,7 +2153,8 @@
           document.getElementById('display-handle').innerText = `@${data.username}`;
 
           targetUsername = data.username;
-          document.getElementById('summary-recipient').innerText = '@' + data.username;
+          const summaryRecip = document.getElementById('summary-recipient');
+          if (summaryRecip) summaryRecip.innerText = '@' + data.username;
 
           searchStatus.innerText = "Found";
           searchStatus.style.background = "#E6FFFA";
@@ -1361,9 +2175,16 @@
       searchStatus.style.color = "#FF4D4D";
     }
 
-    function selectPack(element, coins, price) {
-      document.querySelectorAll('.coin-card').forEach(card => card.classList.remove('selected'));
-      element.classList.add('selected');
+    function selectExchangePack(element, coins, price) {
+      document.querySelectorAll('.exchange-pack-box').forEach(box => box.classList.remove('selected'));
+      const pill = document.querySelector('.custom-amount-pill');
+      if (pill) {
+        pill.classList.remove('selected');
+        document.getElementById('custom-amount-pill-text').innerText = 'Enter a custom number or amount';
+      }
+      if (element) {
+        element.classList.add('selected');
+      }
       currentCoins = coins;
       currentPrice = price;
       updateTotalDisplays();
@@ -1371,10 +2192,52 @@
 
     function updateTotalDisplays() {
       const formattedPrice = '$' + currentPrice.toFixed(2);
-      document.getElementById('main-total-price').innerText = formattedPrice;
-      document.getElementById('summary-coins').innerText = currentCoins.toLocaleString() + ' Coins';
-      document.getElementById('summary-price').innerText = formattedPrice;
-      document.getElementById('checkout-total-price').innerText = formattedPrice;
+      const formattedCoins = currentCoins.toLocaleString() + ' Coins';
+      const elSumCoins = document.getElementById('summary-coins');
+      if (elSumCoins) elSumCoins.innerText = formattedCoins;
+      const elSumPrice = document.getElementById('summary-price');
+      if (elSumPrice) elSumPrice.innerText = formattedPrice;
+      const elChkPrice = document.getElementById('checkout-total-price');
+      if (elChkPrice) elChkPrice.innerText = formattedPrice;
+    }
+
+    function updateAllBalances() {
+      const usdFormatted = '$' + userBalanceUSD.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      const coinsFormatted = userBalanceCoins.toLocaleString('en-US');
+
+      // Exchange Screen displays
+      const elExBalUsd = document.getElementById('exchange-balance-usd');
+      if (elExBalUsd) elExBalUsd.innerText = usdFormatted;
+
+      const elExSubUsd = document.getElementById('exchange-sub-usd');
+      if (elExSubUsd) elExSubUsd.innerText = usdFormatted;
+
+      const elExSubCoins = document.getElementById('exchange-sub-coins');
+      if (elExSubCoins) elExSubCoins.innerText = coinsFormatted;
+
+      const elNoteUsd = document.getElementById('note-avail-usd');
+      if (elNoteUsd) elNoteUsd.innerText = usdFormatted;
+
+      const elNoteUsd2 = document.getElementById('note-avail-usd2');
+      if (elNoteUsd2) elNoteUsd2.innerText = usdFormatted;
+
+      const elNoteCoins = document.getElementById('note-avail-coins');
+      if (elNoteCoins) elNoteCoins.innerText = coinsFormatted;
+
+      // LIVE Rewards Screen displays
+      const elLiveMetric = document.getElementById('live-available-metric');
+      if (elLiveMetric) elLiveMetric.innerText = usdFormatted;
+
+      const elLiveHeroDigits = document.getElementById('live-hero-digits');
+      const elLiveHeroCents = document.getElementById('live-hero-cents');
+      if (elLiveHeroDigits && elLiveHeroCents) {
+        const parts = userBalanceUSD.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).split('.');
+        elLiveHeroDigits.innerText = parts[0];
+        elLiveHeroCents.innerText = '.' + (parts[1] || '00');
+      }
+
+      const elLiveHeroSub = document.getElementById('live-hero-sub-text');
+      if (elLiveHeroSub) elLiveHeroSub.innerText = '= ' + usdFormatted;
     }
 
     function openCustomKeypad() {
@@ -1389,14 +2252,14 @@
         if (customString === '') customString = '0';
       } else {
         if (customString === '0') customString = '';
-        if (customString.length < 7) customString += key;
+        if (customString.length < 8) customString += key;
       }
       updateCustomDisplay();
     }
 
     function updateCustomDisplay() {
       const coins = parseInt(customString || '0', 10);
-      const estimatedPrice = (coins * 0.0104).toFixed(2);
+      const estimatedPrice = (coins * 0.012136).toFixed(2);
       document.getElementById('custom-coin-val').innerText = coins.toLocaleString();
       document.getElementById('custom-price-val').innerText = '$' + estimatedPrice;
     }
@@ -1405,45 +2268,23 @@
       const coins = parseInt(customString || '0', 10);
       if (coins <= 0) return;
       currentCoins = coins;
-      currentPrice = parseFloat((coins * 0.0104).toFixed(2));
-      updateTotalDisplays();
-      goToCheckout();
-    }
-
-    let selectedPayment = 'card';
-    function selectPayment(method) {
-      selectedPayment = method;
-      // Reset all
-      ['card', 'apple'].forEach(id => {
-        const radio = document.getElementById('radio-' + id);
-        if (radio) radio.className = 'radio-circle';
-      });
-      ['card', 'addcard', 'apple'].forEach(id => {
-        const el = document.getElementById('pay-' + id);
-        if (el) el.classList.remove('selected');
-      });
-      // Activate selected
-      if (method === 'card') {
-        document.getElementById('pay-card').classList.add('selected');
-        document.getElementById('radio-card').className = 'radio-circle checked';
-      } else if (method === 'apple') {
-        document.getElementById('pay-apple').classList.add('selected');
-        document.getElementById('radio-apple').className = 'radio-circle checked';
+      currentPrice = parseFloat((coins * 0.012136).toFixed(2));
+      document.querySelectorAll('.exchange-pack-box').forEach(box => box.classList.remove('selected'));
+      const pill = document.querySelector('.custom-amount-pill');
+      if (pill) {
+        pill.classList.add('selected');
+        document.getElementById('custom-amount-pill-text').innerText = `${coins.toLocaleString()} Coins ($${currentPrice.toFixed(2)})`;
       }
+      updateTotalDisplays();
+      showScreen('screen-main');
     }
 
-    function goToCheckout() { showScreen('screen-checkout'); }
-
-    /* \u2500\u2500 Confirmation Bottom Sheet \u2500\u2500 */
     function openConfirmSheet() {
       // Populate sheet fields with current order data
       document.getElementById('csheet-amount').innerText = '$' + currentPrice.toFixed(2);
       document.getElementById('csheet-recipient').innerText = '@' + targetUsername;
       document.getElementById('csheet-coins').innerText = currentCoins.toLocaleString() + ' Coins';
-
-      // Payment method label
-      const methodLabel = selectedPayment === 'apple' ? 'Apple Pay' : 'Visa \u2022\u2022\u2022\u2022 8327';
-      document.getElementById('csheet-method').innerText = methodLabel;
+      document.getElementById('csheet-method').innerText = 'TikTok Coins Balance';
 
       // Current date/time
       const now = new Date();
@@ -1459,7 +2300,6 @@
     }
 
     function handleOverlayClick(e) {
-      // Dismiss if user taps the dark backdrop (not the sheet itself)
       if (e.target === document.getElementById('confirm-overlay')) {
         closeConfirmSheet();
       }
@@ -1469,9 +2309,17 @@
       closeConfirmSheet();
       startProcessing();
     }
+
     function startProcessing() {
       showScreen('screen-processing');
       setTimeout(() => {
+        // Decrease TikTok balance!
+        userBalanceUSD -= currentPrice;
+        userBalanceCoins -= currentCoins;
+        if (userBalanceUSD < 0) userBalanceUSD = 0;
+        if (userBalanceCoins < 0) userBalanceCoins = 0;
+        updateAllBalances();
+
         // Populate success screen fields
         document.getElementById('success-user-text').innerText = '@' + targetUsername;
         document.getElementById('success-coins-text').innerText = currentCoins.toLocaleString() + ' Coins';
@@ -1484,17 +2332,98 @@
         const timePart = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
         document.getElementById('success-time-detail').innerText = datePart + ', ' + timePart;
 
+        // Add to LIVE rewards transactions list
+        addLiveTransaction(currentCoins, targetUsername);
+
         showScreen('screen-success');
-      }, 2000);
+      }, 1500);
     }
-    function resetFlow() { showScreen('screen-main'); }
+
+    function addLiveTransaction(coins, username) {
+      const list = document.getElementById('live-tx-list');
+      if (!list) return;
+      const now = new Date();
+      const month = now.getMonth() + 1;
+      const day = now.getDate();
+      const year = now.getFullYear();
+      const hours = String(now.getHours()).padStart(2, '0');
+      const mins = String(now.getMinutes()).padStart(2, '0');
+      const secs = String(now.getSeconds()).padStart(2, '0');
+      const timeStr = `${month}/${day}/${year} ${hours}:${mins}:${secs}`;
+
+      const item = document.createElement('div');
+      item.className = 'tx-item';
+      item.innerHTML = `
+        <div class="tx-title">Sent ${coins.toLocaleString()} Coins to @${username}</div>
+        <div class="tx-time">${timeStr}</div>
+      `;
+      list.insertBefore(item, list.firstChild);
+    }
+
+    function dismissNotice() {
+      const el = document.getElementById('scaled-notice');
+      if (el) el.style.display = 'none';
+    }
+
+    function openLearnMoreModal() {
+      showLiveToast('Scaled LIVE Rewards: Up to 53% rewards percentage.');
+    }
+
+    function handleWithdraw() {
+      showLiveToast('Daily withdrawal limit reached ($1000/$1000)');
+    }
+
+    function showLiveToast(msg) {
+      let toast = document.getElementById('live-toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'live-toast';
+        toast.style.cssText = `
+          position: fixed;
+          bottom: 30px;
+          left: 50%;
+          transform: translateX(-50%);
+          background: rgba(0, 0, 0, 0.84);
+          color: white;
+          padding: 10px 18px;
+          border-radius: 20px;
+          font-size: 13px;
+          font-weight: 500;
+          z-index: 9999;
+          opacity: 0;
+          transition: opacity 0.25s ease;
+          pointer-events: none;
+          text-align: center;
+          max-width: 85%;
+          box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+        `;
+        document.body.appendChild(toast);
+      }
+      toast.innerText = msg;
+      toast.style.opacity = '1';
+      setTimeout(() => {
+        toast.style.opacity = '0';
+      }, 2200);
+    }
+
+    function resetFlow() {
+      showScreen('screen-main');
+    }
+
     function showScreen(id) {
       const header = document.querySelector('header');
       // Screens that should hide the header
-      const hideHeaderScreens = ['screen-checkout', 'screen-processing', 'screen-success', 'screen-keypad'];
-      header.style.display = hideHeaderScreens.includes(id) ? 'none' : 'flex';
+      const hideHeaderScreens = ['screen-checkout', 'screen-processing', 'screen-success', 'screen-keypad', 'screen-live-rewards'];
+      if (header) {
+        header.style.display = hideHeaderScreens.includes(id) ? 'none' : 'flex';
+      }
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
+      const target = document.getElementById(id);
+      if (target) {
+        target.classList.add('active');
+        const container = document.querySelector('.mobile-container');
+        if (container) container.scrollTop = 0;
+      }
     }
 
     // Prevent zoom gestures & double-tap zoom
@@ -1525,6 +2454,7 @@
 
     // Load default account on start
     fetchTikTokUserData('tiktok');
+    updateAllBalances();
   </script>
 
 </body>
