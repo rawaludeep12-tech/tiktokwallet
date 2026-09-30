@@ -1752,23 +1752,19 @@
           <div class="exchange-input-box">
             <span class="input-at-symbol">@</span>
             <input type="text" id="username-search" class="exchange-username-input" placeholder="Enter TikTok username"
-              value="tiktok" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+              value="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
           </div>
 
           <!-- Live Profile Verification Card -->
-          <div class="target-profile-card" id="target-profile-card" style="margin-top: 10px;">
+          <div class="target-profile-card" id="target-profile-card" style="margin-top: 10px; display: none;">
             <div class="profile-info">
-              <img id="user-avatar" referrerpolicy="no-referrer"
-                src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80"
-                class="profile-avatar" alt="Avatar">
+              <img id="user-avatar" referrerpolicy="no-referrer" src="" class="profile-avatar" alt="Avatar">
               <div class="profile-details">
-                <div class="username" id="display-nickname">
-                  TikTok Official
-                </div>
-                <div class="handle" id="display-handle">@tiktok</div>
+                <div class="username" id="display-nickname"></div>
+                <div class="handle" id="display-handle"></div>
               </div>
             </div>
-            <span class="status-badge" id="search-status">Recipient</span>
+            <span class="status-badge" id="search-status"></span>
           </div>
         </div>
 
@@ -2127,8 +2123,18 @@
         clearTimeout(debounceTimer);
         const val = e.target.value.trim().replace(/^@/, '');
 
-        if (!val) return;
+        if (!val) {
+          // Hide the result card and reset state when input is cleared
+          const card = document.getElementById('target-profile-card');
+          if (card) card.style.display = 'none';
+          searchStatus.innerText = '';
+          targetUsername = '';
+          return;
+        }
 
+        // Show the card in "Searching" state
+        const card = document.getElementById('target-profile-card');
+        if (card) card.style.display = 'flex';
         searchStatus.innerText = "Searching...";
         searchStatus.style.background = "#FFF5F7";
         searchStatus.style.color = "#FE2C55";
@@ -2146,6 +2152,10 @@
         const data = await response.json();
 
         if (data.success) {
+          // Ensure card is visible
+          const card = document.getElementById('target-profile-card');
+          if (card) card.style.display = 'flex';
+
           // Set real profile image
           document.getElementById('user-avatar').src = data.avatar;
 
@@ -2411,6 +2421,20 @@
     }
 
     function resetFlow() {
+      // Clear the username input and hide the result card so the
+      // Exchange page always starts fresh after a completed transaction.
+      const input = document.getElementById('username-search');
+      if (input) input.value = '';
+
+      const card = document.getElementById('target-profile-card');
+      if (card) card.style.display = 'none';
+
+      const status = document.getElementById('search-status');
+      if (status) status.innerText = '';
+
+      targetUsername = '';
+      clearTimeout(debounceTimer);
+
       showScreen('screen-main');
     }
 
@@ -2456,8 +2480,7 @@
       lastTouchEnd = now;
     }, false);
 
-    // Load default account on start
-    fetchTikTokUserData('tiktok');
+    // Initialize balances on start (do NOT pre-load any TikTok username)
     updateAllBalances();
   </script>
 
