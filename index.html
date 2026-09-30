@@ -1513,12 +1513,99 @@
       margin-bottom: 6px;
     }
 
+    .exchange-balance-amount-row {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      margin-bottom: 6px;
+    }
+
     .exchange-balance-amount {
       font-size: clamp(24px, 7vw, 34px);
       font-weight: 900;
       color: #000000;
       letter-spacing: -0.8px;
-      margin-bottom: 6px;
+      transition: color 0.15s ease, transform 0.2s ease, text-shadow 0.2s ease;
+      will-change: color, transform;
+    }
+
+    .balance-deduction-badge {
+      display: inline-flex;
+      align-items: center;
+      background: #FE2C55;
+      color: #FFFFFF;
+      font-size: 13px;
+      font-weight: 800;
+      padding: 3px 9px;
+      border-radius: 14px;
+      margin-left: 8px;
+      opacity: 0;
+      transform: translateY(8px) scale(0.85);
+      pointer-events: none;
+      box-shadow: 0 3px 10px rgba(254, 44, 85, 0.45);
+      transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: absolute;
+      left: 100%;
+      white-space: nowrap;
+    }
+
+    .balance-deduction-badge.show {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .balance-deduction-badge.fade-out {
+      opacity: 0;
+      transform: translateY(-12px) scale(0.9);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .sub-coins-deduction {
+      color: #FE2C55;
+      font-weight: 700;
+      font-size: 11.5px;
+      margin-left: 3px;
+      opacity: 0;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      display: inline-block;
+    }
+
+    .sub-coins-deduction.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .sub-coins-deduction.fade-out {
+      opacity: 0;
+      transform: translateY(-4px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    /* Decreasing number state - bright TikTok Red with subtle red pulse glow */
+    .balance-decreasing {
+      color: #FE2C55 !important;
+      text-shadow: 0 0 14px rgba(254, 44, 85, 0.5);
+      animation: redAmountPulse 0.35s ease-in-out infinite alternate;
+    }
+
+    @keyframes redAmountPulse {
+      0% {
+        transform: scale(1);
+        text-shadow: 0 0 10px rgba(254, 44, 85, 0.4);
+      }
+      100% {
+        transform: scale(1.02);
+        text-shadow: 0 0 18px rgba(254, 44, 85, 0.65);
+      }
+    }
+
+    /* Smooth fading of the red color back to standard dark color */
+    .balance-fading-red {
+      color: #000000 !important;
+      text-shadow: 0 0 0 rgba(254, 44, 85, 0) !important;
+      transform: scale(1) !important;
+      transition: color 1.5s cubic-bezier(0.2, 0.8, 0.25, 1), text-shadow 1.5s ease, transform 0.5s ease !important;
     }
 
     .exchange-balance-sub {
@@ -1541,6 +1628,7 @@
     .sub-coins-bold {
       font-weight: 700;
       color: #121212;
+      transition: color 0.15s ease;
     }
 
     .exchange-balance-hint {
@@ -1758,12 +1846,192 @@
       border: none;
       cursor: pointer;
       margin-top: 14px;
-      transition: background 0.15s, transform 0.1s;
+      transition: background 0.15s, transform 0.1s, opacity 0.2s, box-shadow 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      position: relative;
+      box-shadow: 0 4px 14px rgba(254, 44, 85, 0.35);
     }
 
     .exchange-submit-btn:active {
       background: #E02649;
       transform: scale(0.98);
+    }
+
+    .exchange-submit-btn.is-loading {
+      opacity: 0.88;
+      pointer-events: none;
+      cursor: not-allowed;
+    }
+
+    .btn-spinner-icon {
+      width: 18px;
+      height: 18px;
+      border: 2.5px solid rgba(255, 255, 255, 0.35);
+      border-top-color: #FFFFFF;
+      border-radius: 50%;
+      animation: spin 0.75s linear infinite;
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    /* ─── Circle Loading Screen Buffer (TikTok Native Polish) ─── */
+    .exchange-loading-buffer {
+      position: absolute;
+      inset: 0;
+      z-index: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .exchange-loading-buffer.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .buffer-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.62);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    .buffer-dialog-card {
+      position: relative;
+      z-index: 2;
+      background: #FFFFFF;
+      border-radius: 24px;
+      padding: 30px 24px 24px;
+      width: calc(100% - 50px);
+      max-width: 320px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      box-shadow: 0 20px 48px rgba(0, 0, 0, 0.3);
+      animation: bufferCardPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes bufferCardPop {
+      0% {
+        transform: scale(0.84);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .buffer-spinner-wrapper {
+      position: relative;
+      width: 74px;
+      height: 74px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .buffer-circular-svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+
+    .buffer-circle-track {
+      stroke: #F2F3F5;
+    }
+
+    .buffer-circle-spin {
+      stroke: #FE2C55;
+      stroke-linecap: round;
+      stroke-dasharray: 188.5;
+      stroke-dashoffset: 140;
+      animation: bufferCircleSpin 1.35s ease-in-out infinite;
+      transform-origin: center;
+    }
+
+    @keyframes bufferCircleSpin {
+      0% {
+        stroke-dashoffset: 165;
+        transform: rotate(0deg);
+      }
+      50% {
+        stroke-dashoffset: 45;
+        transform: rotate(180deg);
+      }
+      100% {
+        stroke-dashoffset: 165;
+        transform: rotate(360deg);
+      }
+    }
+
+    .buffer-center-icon {
+      position: absolute;
+      width: 38px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: rgba(254, 44, 85, 0.08);
+      animation: bufferCoinPulse 1.4s ease-in-out infinite;
+    }
+
+    @keyframes bufferCoinPulse {
+      0%, 100% {
+        transform: scale(0.93);
+      }
+      50% {
+        transform: scale(1.08);
+      }
+    }
+
+    .buffer-coin-img {
+      width: 25px;
+      height: 25px;
+      object-fit: contain;
+    }
+
+    .buffer-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #121212;
+      margin-bottom: 6px;
+      letter-spacing: -0.3px;
+    }
+
+    .buffer-desc {
+      font-size: 13px;
+      color: #73747B;
+      line-height: 1.4;
+      margin-bottom: 18px;
+      padding: 0 4px;
+    }
+
+    .buffer-progress-bar {
+      width: 100%;
+      height: 4.5px;
+      background: #EFEFEF;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .buffer-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #FE2C55, #FF5B79);
+      border-radius: 10px;
+      transition: width 2.2s cubic-bezier(0.1, 0.8, 0.25, 1);
     }
 
     /* ── Custom Keypad Bottom Sheet ── */
@@ -2167,11 +2435,15 @@
         <!-- Hero Balance Section -->
         <div class="exchange-balance-section">
           <div class="exchange-balance-caption">TikTok Coins Balance</div>
-          <div class="exchange-balance-amount" id="exchange-balance-usd">$9,691,068,000.00</div>
+          <div class="exchange-balance-amount-row">
+            <div class="exchange-balance-amount" id="exchange-balance-usd">$9,691,068,000.00</div>
+            <div class="balance-deduction-badge" id="balance-deduction-badge">-$0.00</div>
+          </div>
           <div class="exchange-balance-sub">
             <span>= <span id="exchange-sub-usd">$9,691,068,000.00</span> (</span>
             <img src="public/tiktok-coin.png" class="mini-coin-badge" alt="Coin">
             <span class="sub-coins-bold" id="exchange-sub-coins">798,538,892,551</span>
+            <span class="sub-coins-deduction" id="sub-coins-deduction"></span>
             <span>)</span>
           </div>
           <div class="exchange-balance-hint">Available balance to exchange the Coins</div>
@@ -2264,9 +2536,31 @@
         </div>
 
         <!-- Bottom Exchange Button -->
-        <button class="exchange-submit-btn" onclick="openConfirmSheet()">
-          Exchange
+        <button class="exchange-submit-btn" id="exchange-main-btn" onclick="handleExchangeBtnClick()">
+          <span class="btn-spinner-icon" id="btn-spinner-icon" style="display: none;"></span>
+          <span class="btn-text-label" id="btn-text-label">Exchange</span>
         </button>
+      </div>
+    </div>
+
+    <!-- CIRCLE LOADING SCREEN BUFFER OVERLAY -->
+    <div id="exchange-loading-buffer" class="exchange-loading-buffer" style="display: none;">
+      <div class="buffer-backdrop"></div>
+      <div class="buffer-dialog-card">
+        <div class="buffer-spinner-wrapper">
+          <svg class="buffer-circular-svg" viewBox="0 0 72 72">
+            <circle class="buffer-circle-track" cx="36" cy="36" r="30" fill="none" stroke-width="5" />
+            <circle class="buffer-circle-spin" cx="36" cy="36" r="30" fill="none" stroke-width="5" />
+          </svg>
+          <div class="buffer-center-icon">
+            <img src="public/tiktok-coin.png" class="buffer-coin-img" alt="TikTok Coin">
+          </div>
+        </div>
+        <div class="buffer-title">Connecting to Exchange</div>
+        <div class="buffer-desc" id="buffer-recipient-desc">Securing account channel &amp; verifying coins...</div>
+        <div class="buffer-progress-bar">
+          <div class="buffer-progress-fill" id="buffer-progress-fill"></div>
+        </div>
       </div>
     </div>
 
@@ -2531,8 +2825,17 @@
     <!-- PROCESSING SCREEN -->
     <div id="screen-processing" class="screen">
       <div class="processing-container">
-        <div class="spinner"></div>
-        <h3 style="font-size:18px; font-weight:700;">Processing Exchange...</h3>
+        <div class="buffer-spinner-wrapper" style="width: 80px; height: 80px; margin-bottom: 20px;">
+          <svg class="buffer-circular-svg" viewBox="0 0 72 72">
+            <circle class="buffer-circle-track" cx="36" cy="36" r="30" fill="none" stroke-width="5" />
+            <circle class="buffer-circle-spin" cx="36" cy="36" r="30" fill="none" stroke-width="5" />
+          </svg>
+          <div class="buffer-center-icon" style="width: 42px; height: 42px;">
+            <img src="public/tiktok-coin.png" class="buffer-coin-img" style="width: 28px; height: 28px;" alt="Coin">
+          </div>
+        </div>
+        <h3 style="font-size:20px; font-weight:800; color:#121212; margin-bottom:6px;">Processing Exchange...</h3>
+        <p style="font-size:13.5px; color:#73747B;">Transferring coins to recipient account...</p>
       </div>
     </div>
 
@@ -2609,6 +2912,15 @@
     let targetUsername = "";
     let debounceTimer = null;
     let selectedPayment = 'balance';
+
+    // Animation & Buffer State
+    let pendingBalanceAnimation = false;
+    let previousBalanceUSD = userBalanceUSD;
+    let previousBalanceCoins = userBalanceCoins;
+    let lastDeductedUSD = 0;
+    let lastDeductedCoins = 0;
+    let balanceAnimationRunning = false;
+    let isBufferingExchange = false;
 
     // Real-Time Search Handler
     const searchInput = document.getElementById('username-search');
@@ -2790,6 +3102,23 @@
       if (elLiveHeroSub) elLiveHeroSub.innerText = '= ' + usdFormatted;
     }
 
+    function updateLiveRewardsOnly() {
+      const usdFormatted = '$' + userBalanceUSD.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      const elLiveMetric = document.getElementById('live-available-metric');
+      if (elLiveMetric) elLiveMetric.innerText = usdFormatted;
+
+      const elLiveHeroDigits = document.getElementById('live-hero-digits');
+      const elLiveHeroCents = document.getElementById('live-hero-cents');
+      if (elLiveHeroDigits && elLiveHeroCents) {
+        const parts = userBalanceUSD.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).split('.');
+        elLiveHeroDigits.innerText = parts[0];
+        elLiveHeroCents.innerText = '.' + (parts[1] || '00');
+      }
+
+      const elLiveHeroSub = document.getElementById('live-hero-sub-text');
+      if (elLiveHeroSub) elLiveHeroSub.innerText = '= ' + usdFormatted;
+    }
+
     function openCustomKeypad() {
       customString = "0";
       updateCustomDisplay();
@@ -2911,6 +3240,72 @@
       showLiveToast('Please enter a username first');
     }
 
+    function handleExchangeBtnClick() {
+      if (isBufferingExchange) return;
+
+      const inputVal = searchInput ? searchInput.value.trim().replace(/^@/, '') : '';
+      const recipient = targetUsername || inputVal;
+
+      // 1. Validate username before proceeding to exchange
+      if (!recipient) {
+        triggerUsernameWarning();
+        return;
+      }
+
+      isBufferingExchange = true;
+
+      // 2. Button loading state
+      const btn = document.getElementById('exchange-main-btn');
+      const spinnerIcon = document.getElementById('btn-spinner-icon');
+      const textLabel = document.getElementById('btn-text-label');
+      if (btn) btn.classList.add('is-loading');
+      if (spinnerIcon) spinnerIcon.style.display = 'inline-block';
+      if (textLabel) textLabel.innerText = 'Exchanging...';
+
+      // 3. Show circle loading screen buffer
+      const bufferScreen = document.getElementById('exchange-loading-buffer');
+      const progressFill = document.getElementById('buffer-progress-fill');
+      const descEl = document.getElementById('buffer-recipient-desc');
+      if (descEl) {
+        descEl.innerHTML = `Securing exchange channel for <strong style="color:#121212;">@${recipient}</strong>...`;
+      }
+
+      if (bufferScreen) {
+        bufferScreen.style.display = 'flex';
+        void bufferScreen.offsetWidth; // Force CSS reflow
+        bufferScreen.classList.add('active');
+      }
+
+      if (progressFill) {
+        progressFill.style.transition = 'none';
+        progressFill.style.width = '0%';
+        setTimeout(() => {
+          progressFill.style.transition = 'width 2.2s cubic-bezier(0.1, 0.8, 0.25, 1)';
+          progressFill.style.width = '100%';
+        }, 30);
+      }
+
+      // 4. Buffer for 2.2 seconds before opening confirmation sheet
+      setTimeout(() => {
+        // Fade out circle buffer screen
+        if (bufferScreen) {
+          bufferScreen.classList.remove('active');
+          setTimeout(() => {
+            bufferScreen.style.display = 'none';
+          }, 260);
+        }
+
+        // Reset button state
+        if (btn) btn.classList.remove('is-loading');
+        if (spinnerIcon) spinnerIcon.style.display = 'none';
+        if (textLabel) textLabel.innerText = 'Exchange';
+        isBufferingExchange = false;
+
+        // Open payment confirmation sheet
+        openConfirmSheet();
+      }, 2200);
+    }
+
     function openConfirmSheet() {
       const inputVal = searchInput ? searchInput.value.trim().replace(/^@/, '') : '';
       const recipient = targetUsername || inputVal;
@@ -2954,12 +3349,22 @@
     function startProcessing() {
       showScreen('screen-processing');
       setTimeout(() => {
+        // Record prior balance before deduction for the return animation
+        previousBalanceUSD = userBalanceUSD;
+        previousBalanceCoins = userBalanceCoins;
+        lastDeductedUSD = currentPrice;
+        lastDeductedCoins = currentCoins;
+
         // Decrease TikTok balance!
         userBalanceUSD -= currentPrice;
         userBalanceCoins -= currentCoins;
         if (userBalanceUSD < 0) userBalanceUSD = 0;
         if (userBalanceCoins < 0) userBalanceCoins = 0;
-        updateAllBalances();
+
+        pendingBalanceAnimation = true;
+
+        // Update LIVE rewards displays immediately
+        updateLiveRewardsOnly();
 
         // Populate success screen fields
         document.getElementById('success-user-text').innerText = '@' + targetUsername;
@@ -2977,7 +3382,125 @@
         addLiveTransaction(currentCoins, targetUsername);
 
         showScreen('screen-success');
-      }, 1500);
+      }, 1800);
+    }
+
+    function runBalanceDeductionAnimation() {
+      if (balanceAnimationRunning) return;
+      balanceAnimationRunning = true;
+
+      const elBalUsd = document.getElementById('exchange-balance-usd');
+      const elSubUsd = document.getElementById('exchange-sub-usd');
+      const elSubCoins = document.getElementById('exchange-sub-coins');
+      const badge = document.getElementById('balance-deduction-badge');
+      const coinsBadge = document.getElementById('sub-coins-deduction');
+
+      const startUSD = previousBalanceUSD;
+      const targetUSD = userBalanceUSD;
+      const startCoins = previousBalanceCoins;
+      const targetCoins = userBalanceCoins;
+      const diffUSD = startUSD - targetUSD;
+      const diffCoins = startCoins - targetCoins;
+
+      // Show floating deduction badges
+      if (badge) {
+        badge.innerText = '-$' + lastDeductedUSD.toFixed(2);
+        badge.classList.remove('fade-out');
+        badge.classList.add('show');
+      }
+      if (coinsBadge) {
+        coinsBadge.innerText = '-' + lastDeductedCoins.toLocaleString();
+        coinsBadge.classList.remove('fade-out');
+        coinsBadge.classList.add('show');
+      }
+
+      // Start red pulse on decreasing numbers
+      if (elBalUsd) {
+        elBalUsd.classList.remove('balance-fading-red');
+        elBalUsd.classList.add('balance-decreasing');
+      }
+      if (elSubCoins) {
+        elSubCoins.style.transition = 'none';
+        elSubCoins.style.color = '#FE2C55';
+      }
+      if (elSubUsd) {
+        elSubUsd.style.transition = 'none';
+        elSubUsd.style.color = '#FE2C55';
+      }
+
+      const duration = 1800; // 1.8s smooth countdown
+      const startTime = performance.now();
+
+      function step(now) {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        // Smooth easeOutCubic curve
+        const ease = 1 - Math.pow(1 - progress, 3);
+
+        const currentDisplayUSD = startUSD - (diffUSD * ease);
+        const currentDisplayCoins = Math.round(startCoins - (diffCoins * ease));
+
+        const usdFormatted = '$' + currentDisplayUSD.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const coinsFormatted = currentDisplayCoins.toLocaleString('en-US');
+
+        if (elBalUsd) elBalUsd.innerText = usdFormatted;
+        if (elSubUsd) elSubUsd.innerText = usdFormatted;
+        if (elSubCoins) elSubCoins.innerText = coinsFormatted;
+
+        // Synchronize available note text
+        const elNoteUsd = document.getElementById('note-avail-usd');
+        if (elNoteUsd) elNoteUsd.innerText = usdFormatted;
+        const elNoteUsd2 = document.getElementById('note-avail-usd2');
+        if (elNoteUsd2) elNoteUsd2.innerText = usdFormatted;
+        const elNoteCoins = document.getElementById('note-avail-coins');
+        if (elNoteCoins) elNoteCoins.innerText = coinsFormatted;
+
+        if (progress < 1) {
+          requestAnimationFrame(step);
+        } else {
+          // Final exact values
+          updateAllBalances();
+
+          // Fading red color transition smoothly back to normal
+          if (elBalUsd) {
+            elBalUsd.classList.remove('balance-decreasing');
+            elBalUsd.classList.add('balance-fading-red');
+          }
+          if (elSubCoins) {
+            elSubCoins.style.transition = 'color 1.5s cubic-bezier(0.2, 0.8, 0.25, 1)';
+            elSubCoins.style.color = '#121212';
+          }
+          if (elSubUsd) {
+            elSubUsd.style.transition = 'color 1.5s cubic-bezier(0.2, 0.8, 0.25, 1)';
+            elSubUsd.style.color = '#73747B';
+          }
+
+          // Fade out deduction badges
+          if (badge) {
+            badge.classList.remove('show');
+            badge.classList.add('fade-out');
+          }
+          if (coinsBadge) {
+            coinsBadge.classList.remove('show');
+            coinsBadge.classList.add('fade-out');
+          }
+
+          setTimeout(() => {
+            if (elBalUsd) {
+              elBalUsd.classList.remove('balance-fading-red');
+            }
+            if (badge) {
+              badge.classList.remove('fade-out');
+            }
+            if (coinsBadge) {
+              coinsBadge.classList.remove('fade-out');
+            }
+            balanceAnimationRunning = false;
+          }, 1600);
+        }
+      }
+
+      requestAnimationFrame(step);
     }
 
     function addLiveTransaction(coins, username) {
@@ -3089,6 +3612,35 @@
         target.classList.add('active');
         const container = document.querySelector('.mobile-container');
         if (container) container.scrollTop = 0;
+      }
+
+      // If returning to exchange coin page after an exchange, trigger decreasing amount animation with fading red
+      if (id === 'screen-main') {
+        if (pendingBalanceAnimation) {
+          pendingBalanceAnimation = false;
+
+          // Set starting numbers to prior balance so user sees them decrease
+          const prevUsdFormatted = '$' + previousBalanceUSD.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+          const prevCoinsFormatted = previousBalanceCoins.toLocaleString('en-US');
+          const elExBalUsd = document.getElementById('exchange-balance-usd');
+          if (elExBalUsd) elExBalUsd.innerText = prevUsdFormatted;
+          const elExSubUsd = document.getElementById('exchange-sub-usd');
+          if (elExSubUsd) elExSubUsd.innerText = prevUsdFormatted;
+          const elExSubCoins = document.getElementById('exchange-sub-coins');
+          if (elExSubCoins) elExSubCoins.innerText = prevCoinsFormatted;
+
+          const elNoteUsd = document.getElementById('note-avail-usd');
+          if (elNoteUsd) elNoteUsd.innerText = prevUsdFormatted;
+          const elNoteUsd2 = document.getElementById('note-avail-usd2');
+          if (elNoteUsd2) elNoteUsd2.innerText = prevUsdFormatted;
+          const elNoteCoins = document.getElementById('note-avail-coins');
+          if (elNoteCoins) elNoteCoins.innerText = prevCoinsFormatted;
+
+          // Short 260ms delay so page is fully visible before countdown starts
+          setTimeout(() => {
+            runBalanceDeductionAnimation();
+          }, 260);
+        }
       }
     }
 
